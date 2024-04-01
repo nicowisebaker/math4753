@@ -1,0 +1,181 @@
+---
+title: "Lab 3 Tasks 1-6 Markdown"
+author: "Nico Wisebaker"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Tasks
+
+Lab 3 Tasks
+
+## Task 1
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+```{r}
+spruce <- read.csv("SPRUCE.csv")
+head(spruce)
+
+```
+
+Read in SPRUCE.csv and created mylab3.R
+
+## Task 3
+
+```{r}
+bhdiameter <- spruce$BHDiameter
+height <- spruce$Height
+scatter <- plot(bhdiameter, height,
+      main = "Height Versus Breast Height Diameter of Spruce Trees",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+scatter
+
+```
+
+The data does not seem to have a straight line relationship. We *could* use one to describe it somewhat accurately but it seems more logarithmic than linear.
+
+```{r}
+library(s20x)
+
+layout(matrix(1:3, nr = 3))
+trend1 <- trendscatter(Height ~ BHDiameter, f = 0.5, data = spruce)
+trend2 <- trendscatter(Height ~ BHDiameter, f = 0.6, data = spruce)
+trend3 <- trendscatter(Height ~ BHDiameter, f = 0.7, data = spruce)
+```
+
+Lowess smoother scatter plots, formatted with layout()
+
+```{r}
+spruce.lm <- with(spruce, lm(height ~ bhdiameter))
+plot(bhdiameter, height,
+      main = "Height Versus Breast Height Diameter of Spruce Trees",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+abline(spruce.lm)
+```
+
+abline (least squares) plot. This linear model seems accurate enough, although the points further from the rest of the data stray more from the line. The trendscatter plots suggest the data is a little curvy.
+
+## Task 4
+
+```{r}
+layout <- layout(matrix(1:4, nr = 2, nc = 2, byrow = TRUE))
+
+plot(bhdiameter, height,
+      main = "Height Versus Breast Height Diameter",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+abline(spruce.lm)
+
+plot(bhdiameter, height,
+      main = "Height v, BHDiameter RSS",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+resid <- with(spruce,predict(spruce.lm, data.frame(bhdiameter)))
+with(spruce,{segments(bhdiameter, height, bhdiameter, resid)})
+abline(spruce.lm)
+
+plot(bhdiameter, height,
+      main = "Height v, BHDiameter MSS",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+with(spruce, segments(bhdiameter, mean(height), bhdiameter, resid,col = "Red"))
+abline(spruce.lm)
+abline(h = mean(height))
+
+plot(bhdiameter, height,
+      main = "Height v, BHDiameter TSS",
+      ylab = "Height (m)",
+      xlab = "Breast Height Diameter (cm)",
+      pch = 21, bg = "Blue", cex = 1.2,
+      xlim = c(0, 1.1*max(bhdiameter)),
+      ylim = c(0, 1.1*max(height)))
+with(spruce, segments(bhdiameter, mean(height), bhdiameter, height, col = "Green"))
+abline(h = mean(height))
+
+```
+
+Linear regression plot, residual sum of squares (RSS) plot, mean sum of squares (MSS) plot, and total sum of squares (TSS plot.
+
+```{r}
+RSS <- with(spruce, sum((height - resid)^2))
+RSS
+
+MSS <- with(spruce, sum((resid - mean(height))^2))
+MSS
+
+TSS <- with(spruce, sum((height - mean(height))^2))
+TSS
+
+MSS/TSS
+```
+
+calculated rss mss tss, and mss/tss is r^2, the proportion of variance in the dependent variable explained by the independent variable
+
+```{r}
+RSS + MSS == TSS
+RSS + MSS
+TSS
+```
+
+R claims they are not equal, but the values are equal-- at least to the 4th decimal place.
+
+## Task 5
+
+```{r}
+summary(spruce.lm)
+```
+
+Value of slope 0.48147
+Value of intercept 9.14684
+Equation of fitted line ŷ = 9.14684 + 0.48147x
+
+```{r}
+predict(spruce.lm, bhdiameter = 15)
+predict(spruce.lm, bhdiameter = 18)
+predict(spruce.lm, bhdiameter = 20)
+```
+
+Predicted heights of spruce when the breast height diameter is 15, 18 and 20cm 
+
+## Task 6
+
+```{r}
+library(ggplot2)
+g=ggplot(spruce, aes(x=BHDiameter,y=Height))
+g=g+geom_point() + geom_line()+ geom_smooth(method="lm", color = "Blue")
+g+ggtitle("Height v. Breast Height Diameter of Spruce Trees")
+```
+
+## Task 7
+
+![](spruce.png){ width=70% }
+![](points.png){ width=70% }
+![](lines.png){ width=70% }

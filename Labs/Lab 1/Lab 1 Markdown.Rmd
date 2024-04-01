@@ -1,0 +1,159 @@
+---
+title: "Lab 1"
+author: "Nico Wisebaker"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+Lab 1 Tasks
+
+## Task 1
+
+```{r}
+getwd()
+```
+
+
+## Task 2
+```{r}
+ddt <- read.csv("DDT.csv")
+head(ddt)
+```
+
+
+## Task 3
+```{r}
+table(ddt$SPECIES)
+
+ddt[ddt$SPECIES == "LMBASS" & ddt$WEIGHT > 800,]
+
+ddt[ddt$RIVER == "SCM" & ddt$DDT > 4.0,]
+```
+There are 3 species.
+Two LMBASS have a weight over 800.
+
+
+## Task 4
+```{r}
+length <- ddt$LENGTH
+mean(length)
+```
+
+Q1: 42.8125
+```{r}
+weight <- ddt$WEIGHT
+sd(weight)
+```
+
+Q2: 376.5461
+```{r}
+with(ddt,plot(WEIGHT,LENGTH))
+```
+
+Q3: 0
+```{r}
+v = 1:20
+v/20
+```
+
+Q4: 1.00
+
+
+## Task 5
+```{r}
+tbl1 <- with(ddt,table(RIVER))
+tbl1
+```
+
+Table of RIVER
+```{r}
+colorsYay <- c("#faad11", "#fe679a", "#a811fc", "#6c2afb")
+barplot(tbl1,col = colorsYay)
+```
+
+Bar plot of RIVER (color-coded)
+```{r}
+tbl2 <- with(ddt,table(RIVER,SPECIES))
+tbl2
+```
+
+Table of RIVERS crossed with SPECIES
+```{r}
+barplot(tbl2, col = colorsYay)
+```
+
+Bar plot of RIVERS crossed with SPECIES
+
+
+## Task 6
+```{r}
+pie1 <- with(ddt, table(SPECIES))
+pie(pie1, col = colorsYay)
+```
+
+Pie chart of SPECIES
+```{r}
+pie2 <- with(ddt, table(RIVER))
+pie(pie2, col = colorsYay)
+```
+
+Pie chart of RIVER
+
+
+## Task 7
+```{r}
+ddtBox <- with(ddt, boxplot(DDT, ylab="DDT", col = colorsYay[2], notch=TRUE))
+```
+
+Box plot of the variable DDT
+```{r}
+weightBox <- with(ddt,boxplot(WEIGHT, ylab="WEIGHT", col = colorsYay[3], notch=TRUE))
+```
+
+Box plot of the variable WEIGHT
+```{r}
+lengthBox <- with(ddt,boxplot(LENGTH, ylab="LENGTH", col = colorsYay[4], notch=TRUE))
+```
+
+Box plot of the variable LENGTH
+
+
+## Task 8
+```{r}
+lengthWeight <- with(ddt, coplot(LENGTH~WEIGHT|RIVER, col = colorsYay))
+```
+
+Coplot of LENGTH vs WEIGHT given RIVER
+```{r}
+m=with(ddt, as.numeric(factor(MILE))) # A
+m
+length(unique(m)) #B
+ddtWeight <- with(ddt, coplot(LENGTH~WEIGHT|RIVER*SPECIES, col = MILE))
+```
+
+Coplot of LENGTH Vs WEIGHT given RIVER*SPECIES
+
+
+## Task 9
+```{r}
+library(ggplot2)
+g1 <- ggplot(data = ddt, aes(x = SPECIES, y = WEIGHT, fill  = RIVER))
+g1 <- g1 + geom_boxplot() + ggtitle("Nico Wisebaker's Box Plot") +scale_fill_manual(values = colorsYay)
+g1
+g2 <- ggplot(data = ddt, aes(x = RIVER, y = LENGTH, fill  = SPECIES))
+g2 <- g2 + geom_violin() + ggtitle("Nico Wisebaker's Violin Plot") + scale_fill_manual(values = colorsYay)
+g2
+g3 <- ggplot(data = ddt, aes(x = WEIGHT, y = LENGTH, col = SPECIES))
+g3 <- g3 + geom_point() + ggtitle("Nico Wisebaker's Scatter Plot") + scale_color_manual(values = colorsYay)
+g3
+```
+

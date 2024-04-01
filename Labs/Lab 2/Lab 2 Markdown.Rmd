@@ -1,0 +1,106 @@
+---
+title: "Lab 2"
+author: "Nico Wisebaker"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Tasks
+
+Lab 2 Tasks
+
+## Task 1
+
+```{r}
+getwd()
+```
+
+## Task 2
+```{r}
+EPAGAS <- read.csv("EPAGAS.csv")
+head(EPAGAS)
+```
+
+Read EPAGAS.csv and obtained the first six lines of data
+
+## Task 3
+
+```{r}
+mpg <- EPAGAS$MPG
+```
+
+Created the mpg vector
+
+```{r}
+xBar <- mean(mpg)
+sdX <- sd(mpg)
+
+z <- (mpg - xBar) / sdX
+```
+
+Transformed mpg to z-scores
+
+```{r}
+sdZ <- sd(z)
+possibleOutliers <- mpg[abs(z) > 2 * sdZ]
+possibleOutliers
+```
+
+Values of mpg that are possible outliers (i.e., z-scores that are beyond 2 standard deviations from the mean)
+
+```{r}
+outliers <- mpg[abs(z) > 3 * sdZ]
+outliers
+```
+
+Values of mpg that are defined as outliers (3 sd away).
+
+```{r}
+library(lattice)
+outlierLabels <- rep("Normal", length(mpg))
+outlierLabels[mpg %in% outliers] <- "Outlier"
+outlierLabels[mpg %in% possibleOutliers] <- "Possible Outlier"
+mycol = ifelse(abs(z)>3, "Red",
+        ifelse(abs(z)>=2 &abs(z)<=3,"Blue", "Black"))
+dotplot(mpg,col=mycol,)
+```
+
+Constructed a dotplot with colors Red=outliers & Blue=possible outliers
+
+## Task 4
+
+```{r}
+boxplot(mpg, horizontal = TRUE, col = "black", notch = TRUE, border = "#343434", main = "Nico Wisebaker's Boxplot of MPG")
+```
+Made a boxplot of the mpg variable
+
+```{r}
+chebyshevProp <- 1 - 1/2^2
+library(scales)
+label_percent()(chebyshevProp)
+```
+Predicted the proportion of data within 2 standard deviations of the mean of the mpg data using Chebyshev's thm.
+
+```{r}
+within2sd <- mean(abs(mpg - xBar) <= 2 * sdX)
+label_percent()(within2sd)
+```
+Calculated the proportion of data within 2 standard deviations of the mean of the mpg data.
+
+According to Chebyshev's theorem, at least 75% of the data should fall within 2 standard deviations of the mean, and it holds up here. Although this lower bound is not very close to the actual result.
+
+According to the emperical rule, this proportion should be 95%. This dataset corresponds fairly well with the emperical rule, as the prediction for the proportion of data within 2 standard deviations is only a 1% difference. So, the data is approximately normal.
+
+Checking validity:
+
+```{r}
+hist(mpg)
+```
+
+The emperical rule is valid since the data is unimodal and symmetric about the mean.

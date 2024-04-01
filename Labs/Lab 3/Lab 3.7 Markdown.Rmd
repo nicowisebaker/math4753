@@ -1,0 +1,50 @@
+---
+title: "Lab 3 Task 7 Markdown"
+author: "Nico Wisebaker"
+date: "`r Sys.Date()`"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Lab 3 Tasks
+
+## Task 7 
+
+```{r slr, echo=FALSE}
+library(ggplot2)
+# DATA
+spruce = read.csv("SPRUCE.csv")#MS pg478
+
+# INPUTS
+inputPanel(
+  
+  
+  selectInput("plotg", "Choose plot type",
+      list(`points` = c("spruce.lm", "points", "lined points")
+      )
+    )
+)
+
+renderPlot({
+  
+ g = ggplot(spruce, aes(x = BHDiameter, y = Height)) + geom_point()
+ 
+ glin = g + geom_smooth(method = lm, col = "Blue")
+
+ gh = g + geom_point(aes(col = Height)) 
+ 
+ gr = g + geom_point(aes(col = BHDiameter)) + geom_line()
+  
+ if(input$plotg == "spruce.lm") print(glin)
+ 
+ if(input$plotg == "points")   print(gh)
+ 
+ if(input$plotg == "lined points")   print(gr)
+ 
+   
+})
+```

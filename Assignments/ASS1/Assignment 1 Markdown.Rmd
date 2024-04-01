@@ -1,0 +1,539 @@
+---
+title: "Assignment 1 Markdown"
+author: "Nico Wisebaker"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<b style="font-size:20px;">Questions answered: 15/15</b>
+
+# Questions
+
+## 1
+The grading formula for this course is:
+
+- In class quizzes: 10% of total
+- Laboratories+ (up to 16): 10% of total
+- Chapter Quizzes: 5% of total
+- Project 1: 3.33% of total
+- Project 2: 6.67% of total
+- Exam 1: 10% of total
+- Exam 2: 10% of total
+- Assignments (4): 15% of total
+- Final Exam: 30% of total
+
+The grading scale is A = 90s, B = 80s, C = 60s and 70s, D= 50s, and F = lower than 50. There is no curving.
+
+## 2 
+```{r}
+ddt <- read.csv("DDT.csv")
+m=with(ddt, as.numeric(factor(MILE))) # A
+length(unique(m)) #B
+```
+### (a)
+```{r}
+ddtWeight <- with(ddt, coplot(LENGTH~WEIGHT|RIVER*SPECIES, col = m))
+```
+
+### (b)
+The lower left three conditional plots are LENGTH Vs WEIGHT of CCATFISH in the FCM, LCM, and SCM rivers colored to m.
+
+### (c)
+Line A uses the factor function on the MILE column of the DDT dataframe to get all the values of mile, and then uses as.numeric to create a vector of these values.
+
+### (d)
+Line B counts how many unique values are in m (17) by using the unique function to remove all repeated values and then using the length function to get the length of the vector.
+
+### (e)
+Those six plots are empty because no data was collected for LMBASS or SMBUFFALO in the FCM, LCM, and SCM rivers.
+
+```{r}
+subset(ddt, (SPECIES == "LMBASS" | SPECIES == "SMBUFFALO") & (RIVER == "FCM" | RIVER == "LCM" | RIVER == "SCM"))
+```
+### (f)
+```{r}
+subset_fcm_ccatfish <- subset(ddt, SPECIES == "CCATFISH" & RIVER == "FCM")
+fcm_ccatfish_mean_ddt <- mean(subset_fcm_ccatfish$DDT)
+fcm_ccatfish_mean_ddt
+```
+The mean value of DDT found in the sample of CCATFISH caught in the FCM river is 45.
+
+## 3
+*National Bridge Inventory.* All highway bridges in the United States are inspected periodically for structural deficiency by the Federal Highway Administration (FHWA). Data from the FHWA inspections are compiled into the National Bridge Inventory (NBI). Several of the nearly 100 variables maintained by the NBI are listed below. Classify each variable as quantitative or qualitative.
+
+a. Length of maximum span (feet)
+    
+    Quantitative
+    
+b. Number of vehicle lanes
+
+    Quantitative
+    
+c. Toll bridge (yes or no)
+    
+    Qualitative
+    
+d. Average daily traffic
+  
+    Quantitative
+    
+e. Condition of deck (good, fair, or poor)
+
+    Qualitative
+  
+f. Bypass or detour length (miles)
+
+    Quantitative
+
+g. Route type (interstate, U.S., state, county, or city
+
+    Qualitative
+
+
+## 4
+
+### (a)
+The names of the four random sampling designs given in the book are simple random sampling, stratified random sampling, cluster sampling, and systematic sampling.
+
+### (b)
+A brief description of each random sampling design:
+
+- Simple: A simple random sample typically uses some kind of random number generation to sample randomly from the population (number the n members of the population from 1 to n, and get your sample by generating m random numbers between 1 and n). Any given member of the population is as likely to be chosen as any other.
+- Stratified: A stratified sample is used when experimental units benefit from being classified as part of groups (strata). After separating the population into n groups, random sampling is done for each group.
+- Cluster: A cluster sample is when data is collected in groups rather than purely randomly (e.g., if you are surveying high school students, you may randomly select a few classrooms to enter and survey all students in those rooms rather than randomly surveying individuals).
+- Systematic: A systematic sample is when instead of using random number generation, you choose every kth experimental unit to collect data on.
+
+## 5
+*Groundwater contamination in wells.* Environmental Science & Technology (Jan. 2005) published a study of methyl *tert*-butyl ether (MTBE) contamination in 223 New Hampshire wells. The data for the wells is saved in the MTBE file. Suppose you want to sample 5 of these wells and conduct a thorough analysis of the water contained in each. Use a random number generator to select a random sample of 5 wells from the 223. List the wells in your sample.
+
+```{r}
+mtbe <- read.csv("MTBE.csv")
+head(mtbe)
+dim(mtbe)
+```
+Head and dimensions of entire mtbe dataframe.
+```{r}
+ind <- sample(1:223, 5, replace=FALSE) # random indices
+mtbe[ind,]
+```
+Random sample of 5 members from mtbe dataframe.
+
+### (a)
+```{r}
+mtbeo <- na.omit(mtbe)
+```
+Removed all the rows in mtbe that contain one or more NA's.
+
+### (b)
+```{r}
+mtbeo_bedrock <- subset(mtbeo, Aquifier == "Bedrock")
+sd(mtbeo_bedrock$Depth)
+```
+Calculated the standard deviation of the depth of wells which have "Bedrock" as the Aquifier using the mtbeo dataframe (56.45357).
+
+
+## 6
+*Earthquake aftershock magnitudes.* Seismologists use the term aftershock to describe the smaller earthquakes that follow a main earthquake. Following a major earthquake in the Los Angeles area, the U.S. Geological Survey recorded information on 2,929 aftershocks. Data on the magnitudes (measured on the Richter scale) for the 2,929 aftershocks are saved in the EARTHQUAKE file. Use a random number generator to select a random sample of30 aftershocks from the EARTHQUAKE file. Identify the aftershocks in your sample.
+```{r}
+eq <- read.csv("EARTHQUAKE.csv")
+head(eq)
+dim(eq)
+```
+Head and dimensions of entire eq dataframe
+```{r}
+v <- sample(1:2929, 30, replace=FALSE)
+eq[v,]
+```
+Random sample of 30 members from eq dataframe.
+
+### (a)
+```{r}
+plot(ts(eq$MAG))
+```
+
+Plot of magnitudes over time
+
+### (b)
+```{r}
+median(eq$MAGNITUDE)
+```
+The median magnitude is 2.
+
+## 7
+Read the story on page 18.
+
+### (a)
+The data collection method is stratified sampling.
+
+### (b)
+The population members of the three fish species (channel catfish, largemouth bass, and smallmouth buffalofish) found in the Tennessee River (TR) and three of its tributary creeks (Flint Creek (FC), Limestone Creek (LC), and Spring Creek (SC))
+
+### (c)
+The names of the qualitative variables are capture location (RIVER) and species (SPECIES).
+
+## 8
+*Do social robots walk or roll?* According to the United Nations, social robots now outnumber industrial robots worldwide. A social (or service) robot is designed to entertain, educate, and care for human users. In a paper published by the International Conference on Social Robotics(Vol. 6414, 2010), design engineers investigated the trend in the design of social robots. Using a random sample of 106 social robots obtained through a web search, the engineers found that 63 were built with legs only, 20 with wheels only, 8 with both legs and wheels, and 15 with neither legs nor wheels. This information is portrayed in the accompanying figure.
+
+a. What type of graph is used to describe the data?
+  
+    A bar graph is used to describe the data
+    
+b. Identify the variable measured for each of the 106 robot designs.
+
+    The variable measured for each of the robot designs was type of lower limb (legs, wheels, both, or neither)
+
+c. Use graph to identify the social robot design that is currently used the most.
+
+    Legs ONLY is the design used the most (63/106 robots).
+
+d. Compute class relative frequencies for the different categories shown in the graph.
+
+```{r}
+63/106
+20/106
+8/106
+15/106
+```
+- Legs ONLY: 0.5943396
+- Wheels ONLY: 0.1886792
+- Both: 0.0754717
+- None: 0.1415094
+
+e. Use the results, part d, to construct a Pareto diagram for the data
+
+```{r}
+freq=c(15,8,63,20)
+RL=c("None","Both","LegsO","WheelsO")
+l=rep(RL,freq)
+pareto <- function(x, mn = "Pareto barplot", ...) {  # x is a vector
+  x.tab = table(x)
+  xx.tab = sort(x.tab, decreasing = TRUE, index.return = FALSE)
+  cumsum(as.vector(xx.tab)) -> cs
+  length(x.tab) -> lenx
+  bp <- barplot(xx.tab, ylim = c(0,max(cs)),las = 2)
+  lb <- seq(0,cs[lenx], l = 11)
+  axis(side = 4, at = lb, labels = paste(seq(0, 100, length = 11), "%", sep = ""), las = 1, line = -1, col = "Blue", col.axis = "Red")
+  for(i in 1:(lenx-1)){
+    segments(bp[i], cs[i], bp[i+1], cs[i+1], col = i, lwd = 2)
+  }
+  title(main = mn, ...)
+}
+
+
+
+pareto(l)
+```
+
+
+## 9
+*Microsoft program security issues.* The dominance of Microsoft in the computer software market has led to numerous malicious attacks (e.g., worms, viruses) on its programs. To help its users combat these problems, Microsoft periodically issues a Security Bulletin that reports the software affected by the vulnerability. In Computers & Security (July 2013), researchers focused on reported security issues with three Microsoft products: Office, Windows, and Explorer. In a sample of 50 security bulletins issued in 2012, 32 reported a security issue with Windows, 6 with Explorer, and 12 with Office. The researchers also categorized the security bulletins according to the expected repercussion of the vulnerability. Categories were Denial of service, Information disclosure, Remote code execution, Spoofing, and Privilege elevation. Suppose that of the 50 bulletins sampled, the following numbers of bulletins were classified into each respective category: 6, 8, 22, 3, 11.
+
+a. Construct a pie chart to describe the Microsoft products with security issues. Which product had the lowest proportion of security issues in 2012?
+
+```{r}
+reports <- c(32,6,12)
+products <- c("Windows", "Explorer", "Office")
+pie(reports, labels=products, main = "Microsoft Program Security Issues")
+```
+
+In 2012, Explorer had the lowest proportion of security issues.
+
+b. Construct a Pareto diagram to describe the expected repercussions from security issues. Based on the graph, what repercussion would you advise Microsoft to focus on?
+
+```{r}
+freq=c(6, 8, 22, 3, 11)
+RL=c("Denial of service", "Information disclosure", "Remote code execution", "Spoofing", "Privilege elevation")
+l=rep(RL,freq)
+pareto(l)
+```
+
+Microsoft should probably focus on remote code execution (as it is the most frequent here and generally not a good thing...)
+
+## 10
+*Software defects.* The PROMISE Software Engineering Repository is a collection of data sets available to serve researchers in building predictive software models. One such data set, saved in the SWDEFECTS file, contains information on 498 modules of software code. Each module was analyzed for defects and classified as “true” if it contained defective code and “false” if not. Access the data file and produce a pie chart for the defect variable. Use the pie chart to make a statement about the likelihood of defective software code
+
+```{r}
+swd=read.csv("SWDEFECTS.csv")
+head(swd)
+library(plotrix)
+tab=table(swd$defect)
+rtab=tab/sum(tab)
+round(rtab,2)
+pie3D(rtab,labels=list("OK","Defective"),main="pie plot of SWD")
+```
+
+The likelihood of of defective software code is about 10%. Not awful.
+
+## 11
+*Process voltage readings.* A Harris Corporation/University of Florida study was undertaken to determine whether a manufacturing process performed at a remote location can be established locally. Test devices (pilots) were set up at both the old and new locations and voltage readings on the process were obtained. A “good process” was considered to be one with voltage readings of at least 9.2 volts (with larger readings being better than smaller readings). The table contains voltage readings for 30 production runs at each location.
+For constructing the histogram and table below use the left end point as 8.0 and
+right end point as 10.6, with 9 classes. 
+
+```{r}
+voltage <- read.csv("VOLTAGE.csv")
+subset(voltage, VOLTAGE < 9.2)
+```
+
+
+a. Construct a relative frequency histogram for the voltage readings of the old process. Fill out the table when constructing the Histogram. Then plot the histogram by first creating a vector, 'v' say, of relative frequencies, then use names(v) and assign class names to each component, finally using barplot(v,space=0) make your plot.
+
+```{r}
+old <- subset(voltage, LOCATION == "OLD")
+old_voltages <- old$VOLTAGE
+lept<-8.0
+rept<-10.6
+rnge<-rept-lept
+inc<-rnge/9
+inc
+seq(lept, rept,by=inc)->cl
+cl
+cvtn<-cut(old_voltages,breaks=cl)
+old.tab=table(cvtn)/30
+barplot(old.tab,space=0,main="Frequency Histogram(OLD)",las=2)
+```
+
+    
+b. Construct a stem-and-leaf display for the voltage readings of the old process. Which of the two graphs in parts a and b is more informative about where most of the voltage readings lie? Use the stem() function in R.
+
+```{r}
+stem(old_voltages)
+```
+
+I find that the histogram is more informative about where most of the voltage readings lie, while the stem-and-leaf is more useful for looking at individual data points.
+
+c. Construct a relative frequency histogram for the voltage readings of the new process. Use R to make the histogram. Do NOT use hist()
+
+```{r}
+new<-subset(voltage,subset=LOCATION=="NEW")
+new_voltages <- new$VOLTAGE
+max(new_voltages)
+min(new_voltages)
+leptn<-min(new_voltages)-0.05
+reptn<-max(new_voltages)+0.05
+rngen<-rept-lept
+incn<-rnge/9
+incn
+seq(lept, rept,by=inc)->cln
+cln
+cvtn<-cut(new_voltages,breaks=cln)
+new.tab=table(cvtn)/30
+barplot(new.tab,space=0,main="Relative Frequency Histogram(NEW)",las=2)
+```
+
+d. Compare the two graphs in parts a and c. (You may want to draw the two histograms on the same graph.) Does it appear that the manufacturing process can be established locally (i.e., is the new process as good as or better than the old)?
+
+```{r}
+hist(new_voltages,nclass=15)
+hist(old_voltages,nclass=15)
+```
+
+The new process seems to be OK. Though, the old process had more results above the "good" threshold while the new process has fewer above the "good" threshold. 
+
+e. Find and interpret the mean, median, and mode for each of the voltage readings data sets. Which is the preferred measure of central tendency? Explain.
+
+```{r}
+getmode <- function(data) {
+  counts <- table(data)
+  max_count <- max(counts)
+  modes <- as.numeric(names(counts)[which(counts == max_count)])
+  return(modes)
+}
+
+# Old
+mean(old_voltages)
+median(old_voltages)
+getmode(old_voltages)
+
+# New
+mean(new_voltages)
+median(new_voltages)
+getmode(new_voltages)
+```
+
+In this case, the mode is mostly useless for measuring central tendency in both datasets (especially the old set, since there are multiple). For both sets the median is preferred since the median values are not affected by extreme values.
+
+f. Calculate the z-score for a voltage reading of 10.50 at the old location.
+
+```{r}
+x <- 10.50
+old_sd <- sd(old_voltages)
+old_mean <- mean(old_voltages)
+(x - old_mean) / old_sd
+```
+
+g. Calculate the z-score for a voltage reading of 10.50 at the new location.
+
+```{r}
+x <- 10.50
+new_sd <- sd(new_voltages)
+new_mean <- mean(new_voltages)
+(x - new_mean) / new_sd
+```
+    
+h. Based on the results of parts f and g, at which location is a voltage reading of 10.50 more likely to occur? Explain.
+
+    A reading of 10.50 is more likely to occur at the old location. We know this since the closer a z-score is to 0, the closer the value is to the mean.
+
+i. Construct a box plot for the data at the old location. Do you detect any outliers?
+
+```{r}
+boxplot(old_voltages, main = "Box Plot(OLD)")
+```
+
+From the boxplot we can see 4 possible outliers, one above the mean and 3 below the mean.
+
+j. Use the method of z-scores to detect outliers at the old location.
+
+```{r}
+old_z_scores <- (old_voltages - old_mean) / old_sd
+old_voltages[abs(old_z_scores) > 3]
+```
+
+Detected one outlier: 8.05.
+
+k. Construct a box plot for the data at the new location. Do you detect any outliers?
+
+```{r}
+boxplot(new_voltages, main = "Box Plot(NEW)")
+```
+
+Using the boxplot, not outliers are detected.
+
+l. Use the method of z-scores to detect outliers at the new location.
+
+```{r}
+new_z_scores <- (new_voltages - new_mean) / new_sd
+new_voltages[abs(new_z_scores) > 3]
+```
+
+No outliers detected.
+
+m. Compare the distributions of voltage readings at the two locations by placing the box plots, parts i and k, side by side vertically.
+
+```{r}
+par(mfrow = c(2, 1), mar = c(5, 4, 4, 2) -2, mgp = c(2.5, 1, 0) + 0.1)
+boxplot(new_voltages, main = "Box Plot(NEW)")
+boxplot(old_voltages, main = "Box Plot(OLD)")
+```
+
+The distribution of voltages between locations is different, with the old location having a much tighter IQR than the new location. The new location shows fewer outliers than the old location.
+
+## 12
+*Surface roughness of pipe.* Refer to the Anti-corrosion Methods and Materials (Vol. 50, 2003) study of the surface roughness of coated oil field pipes, Exercise 2.20 (p. 37). The data (in micrometers) are repeated in the table. Give an interval that will likely contain about 95% of all coated pipe roughness measurements.
+
+```{r}
+roughpipe <- read.csv("ROUGHPIPE.csv")
+
+#Emperical
+sd <- sd(roughpipe$ROUGH)
+c <- 2*sd
+m <- mean(roughpipe$ROUGH)
+m+c
+m-c
+
+#Chebyshev
+k = 4.47
+ch <- k*sd
+m + ch
+m - ch
+```
+
+Using the emperical rule, we can it is likely that 95% of all measurements are within the interval (0.833, 2.93). Using Chebyshev's rule, we can guarantee that at least 95% of all measurements will be within (-0.461, 4.22).
+
+## 13
+*Mongolian desert ants.* The Journal of Biogeography (Dec. 2003) published an article on the first comprehensive study of ants in Mongolia (Central Asia). Botanists placed seed baits at 11 study sites and observed the ant species attracted to each site. Some of the data recorded at each study site are provided in the table at the top of p. 73.
+
+```{r}
+ants <- read.csv("GOBIANTS.csv")
+head(ants)
+ants2 = within(ants, 
+                 {reg <- ifelse(Region == "Gobi Desert", "GS","DS")
+                  reg<-factor(reg) # Make it a factor
+                 })
+```
+
+a. Find the mean, median, and mode for the number of ant species discovered at the 11 sites. Interpret each of these values.
+
+```{r}
+mean(ants$AntSpecies)
+median(ants$AntSpecies)
+getmode(ants$AntSpecies)
+```
+
+The mean tells us that on average there are 12.8 ant species per site. The median tells us half of the sites had more than 5 ant species, and half of the sites had less than 5 species. The mode tells us the most common numbers of species per site was 4 and 5.
+
+b. Which measure of central tendency would you recommend to describe the center of the number of ant species distribution? Explain.
+
+    For this dataset, the measure of central tendency I would recommend to describe the center of the number of ant species distribution is the median, since it is the center and is less affected by extreme values.
+
+c. Find the mean, median, and mode for the total plant cover percentage at the 5 Dry Steppe sites only.
+
+```{r}
+steppe <- subset(ants2, reg=="DS",)
+mean(steppe$PlantCov)
+median(steppe$PlantCov)
+getmode(steppe$PlantCov)
+```
+
+d. Find the mean, median, and mode for the total plant cover percentage at the 6 Gobi Desert sites only.
+
+```{r}
+gobi <- subset(ants2, reg=="GS",)
+mean(gobi$PlantCov)
+median(gobi$PlantCov)
+getmode(gobi$PlantCov)
+```
+
+e. Based on the results, parts c and d, does the center of the total plant cover percentage distribution appear to be different at the two regions?
+
+    Yes, the center of the total plant cover percentage distribution appears to be higher in the Dry Steppe than in the Gobi desert, by about 10%.
+
+## 14
+*Speed of light from galaxies.* Astronomers theorize that cold dark matter (CDM) caused the formation of galaxies. The theoretical CDM model requires an estimate of the velocity of light emitted from the galaxy. The Astronomical Journal (July, 1995) published a study of galaxy velocities. One galaxy, named A1775, is thought to be a double cluster; that is, two clusters of galaxies in close proximity. Fifty-one velocity observations (in kilometers per second, km/s) from cluster A1775 are listed in the table.
+
+```{r}
+galaxy2 <- read.csv("GALAXY2.csv")
+```
+
+a. Use a graphical method to describe the velocity distribution of galaxy cluster A1775.
+
+```{r}
+hist(galaxy2$VELOCITY)
+```
+
+b. Examine the graph, part a. Is there evidence to support the double cluster theory? Explain.
+
+    Yes, the distribution appears bimodal. This seems like evidence to support the double cluster theory.
+
+c. Calculate numerical descriptive measures (e.g., mean and standard deviation) for galaxy velocities in cluster A1775. Depending on your answer to part b, you may need to calculate two sets of numerical descriptive measures, one for each of the clusters (say, A1775A and A1775B) within the double cluster.
+
+```{r}
+A1775A <- subset(galaxy2, VELOCITY <= 21000)
+A1775B <- subset(galaxy2, VELOCITY > 21000)
+
+print("A1775A")
+summary(A1775A$VELOCITY)
+sd(A1775A$VELOCITY)
+
+print("A1775B")
+summary(A1775B$VELOCITY)
+sd(A1775B$VELOCITY)
+```
+
+d. Suppose you observe a galaxy velocity of 20,000 km/s. Is this galaxy likely to belong to cluster A1775A or A1775B? Explain.
+
+    It is more likely to belong to cluster A1775A, since its center (mean & median) is around 20,000 km/s.  And A1775B Does not even include velocities of 20,000 km/s (its minimum is about 22,000 km/s).
+
+## 15
+```{r}
+library(ggplot2)
+ggplot(data = ddt, aes(x = RIVER, y = LENGTH, fill  = SPECIES)) + geom_boxplot() + ggtitle("Nico Wisebaker's Box Plot")
+```
